@@ -20,8 +20,10 @@ Route::get('/', function () {
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
+        //TODO: supprimer
         'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
+        //TODO: supprimer
+        'phpVersion' => PHP_VERSION, //TODO: supprimer
     ]);
 });
 
@@ -35,4 +37,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
