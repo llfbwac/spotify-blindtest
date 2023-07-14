@@ -23,7 +23,7 @@ class SessionController extends Controller
         $session = Session::create([
             'user_id' => Auth::user()->id,
             'token' => bin2hex(random_bytes(5)),
-            'status' => 'initialization'
+            'status' => 'started'
         ]);
 
         $session->save();
@@ -31,7 +31,7 @@ class SessionController extends Controller
 
         $rawTracks = json_decode($result, true);
 
-        // dd($rawTracks['items'][0]['name']);
+        dd($rawTracks['items'][0]);
 
         foreach ($rawTracks['items'] as $rawTrack) {
             $sessionTrack = SessionTrack::create([
