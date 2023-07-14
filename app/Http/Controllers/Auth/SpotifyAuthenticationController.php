@@ -98,10 +98,10 @@ class SpotifyAuthenticationController extends Controller
 
             $user->save();
 
-            //TODO authentifier l'utilisateur récupéré
+            //Authentification de l'utilisateur récupéré/créé
             Auth::login($user);
 
-            return redirect('/dashboard');
+            return redirect()->route('dashboard');
             // header("Location: " . curl_getinfo($curl)['redirect_url']);
             // die;
         } else {

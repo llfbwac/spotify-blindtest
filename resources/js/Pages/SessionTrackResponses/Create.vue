@@ -7,7 +7,7 @@ const form = useForm({
 });
 
 const submit = () => {
-    form.post(route('session.store'));
+    form.post(route('session-track-response.store'));
 };
 </script>
 
@@ -15,6 +15,18 @@ const submit = () => {
     <Head title="Dashboard" />
 
     <AuthenticatedUserLayout>
+        <div class="row justify-content-center">
+            <div class="col-12 text-center">
+                <h1>blindtest</h1>
+
+                <form @submit.prevent="submit">
+
+
+                    <button class="btn btn-primary">Valider réponse</button>
+
+                </form>
+            </div>
+        </div>
         <!-- <template #header>
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
         </template>
@@ -26,15 +38,5 @@ const submit = () => {
                 </div>
             </div>
         </div> -->
-
-        <h1>c le dashboard</h1>
-
-        <form @submit.prevent="submit">
-
-
-            <button class="btn btn-success">Nouveau blindtest</button>
-
-        </form>
-
     </AuthenticatedUserLayout>
 </template>

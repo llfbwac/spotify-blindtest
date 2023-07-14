@@ -1,10 +1,15 @@
 import './bootstrap';
-import '../css/app.css';
+// import "../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+
+// import '../css/app.css';
+// import "bootstrap";
+
 
 import { createApp, h } from 'vue';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+// import "../../node_modules/bootstrap/dist/js/bootstrap.js"
 
 const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
 
