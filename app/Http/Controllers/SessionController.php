@@ -31,14 +31,15 @@ class SessionController extends Controller
 
         $rawTracks = json_decode($result, true);
 
-        dd($rawTracks['items'][0]);
+        // dd($rawTracks['items'][0]);
 
         foreach ($rawTracks['items'] as $rawTrack) {
             $sessionTrack = SessionTrack::create([
                 'session_id' => $session->id,
-                'spotify_track_id' => $rawTrack['id'],
-                'spotify_track_name' => $rawTrack['name'],
-                'spotify_track_artist' => 'francky vincent',
+                'name' => $rawTrack['name'],
+                //TODO: save le bon artiste
+                'artist' => 'francky vincent',
+                'mp3_url' => $rawTrack['preview_url']
             ]);
 
             $sessionTrack->save();

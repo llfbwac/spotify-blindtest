@@ -30,10 +30,7 @@ const submit = () => {
         <h1>c le dashboard</h1>
 
         <form @submit.prevent="submit">
-
-
             <button class="btn btn-success">Nouveau blindtest</button>
-
         </form>
 
     </AuthenticatedUserLayout>

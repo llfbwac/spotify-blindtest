@@ -1,7 +1,7 @@
 <script setup>
 import AuthenticatedUserLayout from '@/Layouts/AuthenticatedUserLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
-
+import { Howl, Howler } from 'howler';
 
 const form = useForm({
 });
@@ -9,6 +9,16 @@ const form = useForm({
 const submit = () => {
     form.post(route('session-track-response.store'));
 };
+
+var sound = new Howl({
+    src: ['https://p.scdn.co/mp3-preview/176f264ae98696b6ac603018e53b80d5453d83ec?cid=3d8a56d2ab2040bc9719963a3d26f4fa'],
+    format: ['mp3'],
+});
+
+console.log("plaaayyyy");
+sound.play();
+function howly(event) {
+}
 </script>
 
 <template>
@@ -19,8 +29,8 @@ const submit = () => {
             <div class="col-12 text-center">
                 <h1>blindtest</h1>
 
+                <button @click="howly">Toggle Playcc</button>
                 <form @submit.prevent="submit">
-
 
                     <button class="btn btn-primary">Valider réponse</button>
 
@@ -40,3 +50,5 @@ const submit = () => {
         </div> -->
     </AuthenticatedUserLayout>
 </template>
+
+

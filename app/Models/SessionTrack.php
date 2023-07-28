@@ -20,9 +20,9 @@ class SessionTrack extends Model
      */
     protected $fillable = [
         'session_id',
-        'spotify_track_id',
-        'spotify_track_name',
-        'spotify_track_artist',
+        'name',
+        'artist',
+        'mp3_url',
     ];
 
     /**
