@@ -6,45 +6,43 @@ use App\Models\Session;
 use App\Models\SessionTrack;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class SessionController extends Controller
 {
     public function store(Request $request)
     {
         $accessToken = Auth::user()->spotify_access_token;
-        $curl = curl_init('https://api.spotify.com/v1/me/top/tracks');
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            'Accept: application/json',
-            'Authorization: Bearer ' . $accessToken,
-        ]);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $result = curl_exec($curl);
+        $url = 'https://api.spotify.com/v1/me/top/tracks';
 
-        $session = Session::create([
-            'user_id' => Auth::user()->id,
-            'token' => bin2hex(random_bytes(5)),
-            'status' => 'started'
-        ]);
+        $response = Http::withToken($accessToken)->get($url);
 
-        $session->save();
-        // debug($accessToken);
+        if ($response->successful()) {
 
-        $rawTracks = json_decode($result, true);
-
-        // dd($rawTracks['items'][0]);
-
-        foreach ($rawTracks['items'] as $rawTrack) {
-            $sessionTrack = SessionTrack::create([
-                'session_id' => $session->id,
-                'name' => $rawTrack['name'],
-                //TODO: save le bon artiste
-                'artist' => 'francky vincent',
-                'mp3_url' => $rawTrack['preview_url']
+            $session = Session::create([
+                'user_id' => Auth::user()->id,
+                'token' => bin2hex(random_bytes(5)),
+                'status' => 'started'
             ]);
 
-            $sessionTrack->save();
+            $spotifyTracks = json_decode($response->body(), true);
+
+            foreach ($spotifyTracks['items'] as $track) {
+                $sessionTrack = SessionTrack::create([
+                    'session_id' => $session->id,
+                    'name' => $track['name'],
+                    //TODO: save le bon artiste
+                    'artist' => 'francky vincent',
+                    'mp3_url' => $track['preview_url']
+                ]);
+
+                $sessionTrack->save();
+            }
+
+            return redirect()->route('blindtest.play', [$session->id]);
+
         }
 
-        return redirect()->route('session-track-response.create', [$session->getNextTrack()->id]);
+        throw new \Exception('Une erreur est survenue lors de la récupération des tracks');
     }
 }

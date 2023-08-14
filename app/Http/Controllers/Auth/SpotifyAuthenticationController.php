@@ -7,9 +7,12 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Redirect;
 
 class SpotifyAuthenticationController extends Controller
 {
+
     public function login()
     {
         // dd('aie');
@@ -17,7 +20,6 @@ class SpotifyAuthenticationController extends Controller
         $redirect_uri = 'http://localhost:8000/callback-login';
         $state = bin2hex(random_bytes(5)); //
         $scope = 'user-read-private user-read-email user-library-read user-top-read';
-
 
         $data = array(
             'response_type' => 'code',
@@ -27,67 +29,33 @@ class SpotifyAuthenticationController extends Controller
             'state' => $state
         );
 
-        $url .= http_build_query($data);
+        $url = 'https://accounts.spotify.com/authorize?' . http_build_query($data);
 
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-
-
-        $result = curl_exec($curl);
-
-
-        if (empty($result)) {
-            // Request succeed
-            return redirect(curl_getinfo($curl)['redirect_url']);
-            // curl_close($curl);
-        } else {
-            // Request failed
-            dd("Error: " . curl_error($curl));
-        }
+        return redirect($url);
     }
 
     public function callbackLogin(Request $request)
     {
-        // dd($request->query('code'));
-
         $code = $request->query('code');
 
         $url = 'https://accounts.spotify.com/api/token';
         $redirect_uri = 'http://localhost:8000/callback-login';
 
-
         $data = array(
             'code' => $code,
             'redirect_uri' => $redirect_uri,
-            'grant_type' => 'authorization_code'
+            'grant_type' => 'authorization_code',
         );
 
+        $response = Http::asForm()->withBasicAuth(env('SPOTIFY_CLIENT_ID'), env('SPOTIFY_CLIENT_SECRET'))->post($url, $data);
 
-        $curl = curl_init($url);
-        curl_setopt($curl, CURLOPT_HTTPHEADER, [
-            'Content-Type: application/x-www-form-urlencoded',
-            'Authorization: Basic ' . base64_encode(env('SPOTIFY_CLIENT_ID') . ':' . env('SPOTIFY_CLIENT_SECRET')),
-        ]);
-        curl_setopt($curl, CURLOPT_POST, true);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, http_build_query($data));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        if ($response->successful()) {
+            $accessToken = json_decode($response->body(), true)['access_token'];
+            $url = 'https://api.spotify.com/v1/me';
 
+            $response = Http::withToken($accessToken)->get($url);
 
-        $resultCurlToken = curl_exec($curl);
-        // dd($curl, $result);
-        // dd(curl_getinfo($curl));
-
-        if (curl_getinfo($curl)['http_code'] === 200) {
-            $accessToken = json_decode($resultCurlToken, true)['access_token'];
-            $curl = curl_init('https://api.spotify.com/v1/me');
-            curl_setopt($curl, CURLOPT_HTTPHEADER, [
-                'Accept: application/json',
-                'Authorization: Bearer ' . $accessToken,
-            ]);
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-            $resultCurlMe = curl_exec($curl);
-            // debug($accessToken);
-            $spotifyUser = json_decode($resultCurlMe, true);
+            $spotifyUser = json_decode($response->body(), true);
 
             $user = User::firstOrCreate([
                 'spotify_id' => $spotifyUser['id'],
@@ -102,14 +70,8 @@ class SpotifyAuthenticationController extends Controller
             Auth::login($user);
 
             return redirect()->route('dashboard');
-            // header("Location: " . curl_getinfo($curl)['redirect_url']);
-            // die;
-        } else {
-            // Request failed
-            dd("Error: " . curl_error($curl));
         }
-
-        curl_close($curl);
+        dd("Error: ");
     }
 
     public function logout()

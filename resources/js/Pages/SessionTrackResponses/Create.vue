@@ -3,7 +3,17 @@ import AuthenticatedUserLayout from '@/Layouts/AuthenticatedUserLayout.vue';
 import { Head, useForm } from '@inertiajs/vue3';
 import { Howl, Howler } from 'howler';
 
+// defineProps([
+//     sessionTrack,
+//     sessionTrackResponse
+// ]);
+
+const props = defineProps(['sessionTrack']);
+
+
+
 const form = useForm({
+    guess: ''
 });
 
 const submit = () => {
@@ -15,7 +25,8 @@ var sound = new Howl({
     format: ['mp3'],
 });
 
-console.log("plaaayyyy");
+// console.log("plaaayyyy");
+// console.log(props.sessionTracks);
 sound.play();
 function howly(event) {
 }
@@ -29,12 +40,25 @@ function howly(event) {
             <div class="col-12 text-center">
                 <h1>blindtest</h1>
 
-                <button @click="howly">Toggle Playcc</button>
+                {{ sessionTrack.name }}
+
                 <form @submit.prevent="submit">
+                    <div>
+
+                        <input v-model="form.guess" />
+
+                    </div>
 
                     <button class="btn btn-primary">Valider réponse</button>
 
                 </form>
+
+                <!-- <button @click="howly">Toggle Playcc</button>
+                <form @submit.prevent="submit">
+
+                    <button class="btn btn-primary">Valider réponse</button>
+
+                </form> -->
             </div>
         </div>
         <!-- <template #header>

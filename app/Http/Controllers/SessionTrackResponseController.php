@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Inertia\Inertia;
 use App\Models\SessionTrack;
 use Illuminate\Http\Request;
+use App\Models\SessionTrackResponse;
+use Illuminate\Support\Facades\Auth;
 
 class SessionTrackResponseController extends Controller
 {
@@ -13,11 +15,17 @@ class SessionTrackResponseController extends Controller
      */
     public function create(int $sessionTrackId)
     {
-        $sessionTrack = SessionTrack::find($sessionTrackId);
+        $sessionTrack = SessionTrack::findOrFail($sessionTrackId);
+
+
         // dd('create response' . $sessionTrack->spotify_track_name);
 
+        // dd($sessionTrack);
+
         return Inertia::render('SessionTrackResponses/Create', [
+            // 'test' => true,
             'sessionTrack' => $sessionTrack,
+            // 'sessionTrackResponse' => $sessionTrackResponse,
         ]);
     }
 
@@ -26,7 +34,16 @@ class SessionTrackResponseController extends Controller
      */
     public function store(Request $request)
     {
-        dd('store response');
+        // $sessionTrack = SessionTrack::findOrFail($sessionTrackId);
+
+        $sessionTrackResponse = SessionTrackResponse::create([
+            'user_id' => Auth::user()->id,
+            'session_track_id' => $sessionTrack->id,
+            'status' => 'jsp'
+        ]);
+
+        $validated = $request;
+        dd($request->all());
     }
 
     /**
