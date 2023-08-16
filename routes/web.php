@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('api/blindtest/testApi', [ApiBlindtestController::class, 'testApi'])->name('api.blindtest.testApi');
     Route::get('api/blindtest/getNextSessionTrack/{sessionId}', [ApiBlindtestController::class, 'getNextSessionTrack'])->name('api.blindtest.get-next-track');
     Route::get('api/blindtest/sessionTrackSucceed/{sessionId}/{sessionTrackId}', [ApiBlindtestController::class, 'sessionTrackSucceed'])->name('api.blindtest.track-succeed');
+    Route::get('api/blindtest/sessionTrackFailed/{sessionId}/{sessionTrackId}', [ApiBlindtestController::class, 'sessionTrackFailed'])->name('api.blindtest.track-failed');
 });
 
 Route::get('/dashboard', function () {

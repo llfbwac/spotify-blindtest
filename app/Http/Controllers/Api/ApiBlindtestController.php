@@ -46,4 +46,18 @@ class ApiBlindtestController extends Controller
         }
 
     }
+
+    public function sessionTrackFailed($sessionId, $sessionTrackId)
+    {
+        $session = Session::findOrFail($sessionId);
+
+        $sessionTrack = SessionTrack::findOrFail($sessionTrackId);
+
+        // pour éviter de marquer plusieurs fois des points sur une même track
+        if ($sessionTrack->played != true) {
+            $sessionTrack->played = true;
+            $sessionTrack->save();
+        }
+
+    }
 }
