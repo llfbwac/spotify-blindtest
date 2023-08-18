@@ -4,7 +4,7 @@ import { Head, useForm } from '@inertiajs/vue3';
 import { Howl, Howler } from 'howler';
 import { onMounted, ref } from 'vue'
 
-const props = defineProps(['session']);
+const props = defineProps(['session', 'remaining_tracks', 'test']);
 const nextSessionTrack = ref(null);
 const form = useForm({});
 
@@ -20,11 +20,16 @@ const test = ref('zaeoio');
 const timer = ref(null);
 
 onMounted(() => {
+    console.log("remaining tracks : " + props.remaining_tracks)
     axios.get(route('api.blindtest.get-next-track', [props.session.id]))
         .then(function (response) {
             // handle success
             nextSessionTrack.value = response.data;
             console.log(nextSessionTrack.value);
+
+            if (nextSessionTrack.value === null) {
+
+            }
 
             canDisplayWaitingScene.value = false;
             canDisplayStartScene.value = true;
@@ -139,7 +144,9 @@ const submitTrackName = () => {
 
                     <p>This track was : {{ nextSessionTrack.track.name }}</p>
 
-                    <a class="btn btn-success" :href="route('blindtest.play', [props.session.id])">NEXT</a>
+                    <a class="btn btn-success" v-if="props.remaining_tracks > 1"
+                        :href="route('blindtest.play', [props.session.id])">NEXT</a>
+                    <a class="btn btn-success" v-else :href="route('blindtest.end', [props.session.id])">SEE RESULTS</a>
                 </div>
 
             </div>

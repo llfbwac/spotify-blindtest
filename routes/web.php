@@ -48,6 +48,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('blindtest/play/{sessionId}', [BlindtestController::class, 'play'])->name('blindtest.play');
+    Route::get('blindtest/end/{sessionId}', [BlindtestController::class, 'end'])->name('blindtest.end');
 
     Route::get('api/blindtest/testApi', [ApiBlindtestController::class, 'testApi'])->name('api.blindtest.testApi');
     Route::get('api/blindtest/getNextSessionTrack/{sessionId}', [ApiBlindtestController::class, 'getNextSessionTrack'])->name('api.blindtest.get-next-track');

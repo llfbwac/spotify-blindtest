@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\User;
 use App\Models\SessionTrack;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -40,13 +41,16 @@ class Session extends Model
         return $this->hasMany(SessionTrack::class);
     }
 
-    public function getNextTrack()
+    public function getRemainingTracksAttribute()
     {
+        $count = 0;
         foreach ($this->sessionTracks as $sessionTrack) {
 
             if (!$sessionTrack->played) {
-                return $sessionTrack;
+                $count++;
             }
         }
+
+        return $count;
     }
 }

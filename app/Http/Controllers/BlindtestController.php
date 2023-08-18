@@ -10,18 +10,22 @@ class BlindtestController extends Controller
 {
     public function play($sessionId)
     {
-        // dd($sessionId);
-
         $session = Session::findOrFail($sessionId);
-        // $sessionTracks = $session->sessionTracks;
-
-        // dd($session->sessionTracks);
 
         return Inertia::render('Blindtest/Play', [
-            // 'test' => true,
             'session' => $session,
-            // 'sessionTrackResponse' => $sessionTrackResponse,
+            'remaining_tracks' => $session->remaining_tracks,
+            'test' => false,
         ]);
 
+    }
+
+    public function end($sessionId)
+    {
+        $session = Session::findOrFail($sessionId);
+
+        return Inertia::render('Blindtest/End', [
+            'session' => $session,
+        ]);
     }
 }

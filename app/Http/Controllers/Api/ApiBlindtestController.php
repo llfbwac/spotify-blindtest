@@ -38,11 +38,15 @@ class ApiBlindtestController extends Controller
 
         // pour éviter de marquer plusieurs fois des points sur une même track
         if ($sessionTrack->played != true) {
-            $session->score += 1;
-            $session->save();
-
             $sessionTrack->played = true;
             $sessionTrack->save();
+
+            $session->score += 1;
+            if ($session->remaining_tracks === 0) {
+                $session->status = 'ended';
+            }
+            $session->save();
+
         }
 
     }
@@ -57,6 +61,11 @@ class ApiBlindtestController extends Controller
         if ($sessionTrack->played != true) {
             $sessionTrack->played = true;
             $sessionTrack->save();
+        }
+
+        if ($session->remaining_tracks === 0) {
+            $session->status = 'ended';
+            $session->save();
         }
 
     }

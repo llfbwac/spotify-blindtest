@@ -15,7 +15,11 @@ class SessionController extends Controller
         $accessToken = Auth::user()->spotify_access_token;
         $url = 'https://api.spotify.com/v1/me/top/tracks';
 
-        $response = Http::withToken($accessToken)->get($url);
+        $response = Http::withToken($accessToken)
+            ->withQueryParameters([
+                'limit' => 2,
+            ])
+            ->get($url);
 
         if ($response->successful()) {
 
